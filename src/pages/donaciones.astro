@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donaciones - AustralData.org</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 min-h-screen antialiased flex flex-col justify-between">
+    
+    <!-- Header Global -->
+    <Header activePage="donaciones" />
+
+    <main class="max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Apoya la Ciencia Abierta</h1>
+        <p class="text-sm text-gray-500 mt-2 max-w-xl mx-auto">
+          AustralData.org es una iniciativa sin fines de lucro administrada por la Fundación Austral de Observación Científica y Datos Abiertos.
+        </p>
+      </div>
+
+      <div class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+        <h2 class="text-lg font-semibold text-gray-900">¿Cómo contribuyen las donaciones?</h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-gray-600">
+          <div class="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-1">Infraestructura Digital</h3>
+            <p>Financiamiento de servidores de alta disponibilidad y almacenamiento redundante de archivos crudos RAW.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-1">Procesamiento de Datos</h3>
+            <p>Sostenimiento de la automatización e ingesta de metadatos georreferenciados para investigadores.</p>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-gray-100 text-center">
+          <p class="text-xs text-gray-500 mb-4">Para donaciones institucionales o aportes directos, ponte en contacto con nuestro equipo.</p>
+          <a 
+            href="/contacto" 
+            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition shadow-xs"
+          >
+            Contactar para Donaciones
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Global -->
+    <Footer />
+
+  </body>
+</html>

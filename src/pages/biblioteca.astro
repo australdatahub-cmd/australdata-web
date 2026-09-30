@@ -1,0 +1,157 @@
+---
+import Layout from '../layouts/Layout.astro';
+import catalogData from '../data/catalog.json';
+
+type CatalogItem = {
+  id: string;
+  file_name: string;
+  extension: string;
+  media_type: 'PHOTO' | 'VIDEO';
+  preview_url: string;
+  created_at?: string | null;
+  marca?: string | null;
+  modelo?: string | null;
+  creditos_autor?: string | null;
+};
+
+function buildSearchIndex(item: CatalogItem) {
+  const parts = [item.file_name, item.marca, item.modelo, item.creditos_autor];
+  const joined = parts.filter((part): part is string => Boolean(part)).join(' ');
+  return joined.toLowerCase();
+}
+
+const rawItems = catalogData as CatalogItem[];
+const validItems = rawItems.filter((item): item is CatalogItem => Boolean(item && item.id && item.preview_url));
+
+const items = validItems
+  .map((item) => {
+    const detailHref = `/archivo/${item.id}`;
+    return {
+      id: item.id,
+      file_name: item.file_name,
+      extension: item.extension,
+      media_type: item.media_type,
+      preview_url: item.preview_url,
+      created_at: item.created_at || '',
+      searchIndex: buildSearchIndex(item),
+      href: detailHref,
+    };
+  })
+  .sort((a, b) => b.created_at.localeCompare(a.created_at));
+
+const totalLabel = `${items.length} registros`;
+---
+
+<Layout title="Biblioteca - AustralData.org" activePage="biblioteca">
+  <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">Catálogo de Registros Científicos</h1>
+      <p class="text-xs text-gray-500 mt-1">Explora imágenes y videos georreferenciados recolectados en terreno.</p>
+    </div>
+
+    <div class="mb-6 flex flex-col sm:flex-row gap-3 sm:items-center">
+      <input
+        type="text"
+        id="buscador"
+        placeholder="Buscar por nombre, camara o autor..."
+        class="w-full sm:max-w-sm px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
+      />
+      <div class="flex gap-2" id="filtroTipo">
+        <button data-tipo="TODOS" class="filtro-btn px-3 py-2 rounded-lg text-xs font-semibold bg-blue-600 text-white transition">Todos</button>
+        <button data-tipo="PHOTO" class="filtro-btn px-3 py-2 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-gray-600 hover:border-gray-300 transition">Fotos</button>
+        <button data-tipo="VIDEO" class="filtro-btn px-3 py-2 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-gray-600 hover:border-gray-300 transition">Videos</button>
+      </div>
+    </div>
+
+    <p id="contador" class="text-xs text-gray-400 mb-4">{totalLabel}</p>
+
+    <div id="grilla" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {items.map((item) => (
+        <a
+          href={item.href}
+          class="tarjeta group relative block aspect-4/3 bg-gray-900 rounded-2xl overflow-hidden shadow-xs border border-gray-200/80 hover:shadow-lg hover:border-blue-500/50 transition duration-300"
+          data-tipo={item.media_type}
+          data-busqueda={item.searchIndex}
+        >
+          <img
+            src={item.preview_url}
+            alt={item.file_name}
+            loading="lazy"
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+          />
+
+          <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition duration-300"></div>
+
+          {item.media_type === 'VIDEO' && (
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                <svg class="w-5 h-5 text-white translate-x-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+              </div>
+            </div>
+          )}
+
+          <span class="absolute top-3 right-3 bg-gray-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-xs border border-white/10">
+            {item.extension}
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <p id="sinResultados" class="hidden text-center text-sm text-gray-400 py-16">
+      No se encontraron registros con esa busqueda.
+    </p>
+  </div>
+</Layout>
+
+<script>
+  const buscador = document.getElementById('buscador') as HTMLInputElement | null;
+  const tarjetas = Array.from(document.querySelectorAll('.tarjeta')) as HTMLElement[];
+  const sinResultados = document.getElementById('sinResultados') as HTMLElement | null;
+  const contador = document.getElementById('contador') as HTMLElement | null;
+  const botones = Array.from(document.querySelectorAll('.filtro-btn')) as HTMLButtonElement[];
+
+  let tipoActivo = 'TODOS';
+
+  function aplicarFiltros() {
+    const texto = buscador ? buscador.value.trim().toLowerCase() : '';
+    let visibles = 0;
+
+    tarjetas.forEach((tarjeta) => {
+      const busqueda = tarjeta.dataset.busqueda || '';
+      const coincideTexto = texto === '' || busqueda.includes(texto);
+      const coincideTipo = tipoActivo === 'TODOS' || tarjeta.dataset.tipo === tipoActivo;
+      const visible = coincideTexto && coincideTipo;
+      tarjeta.classList.toggle('hidden', !visible);
+      if (visible) {
+        visibles = visibles + 1;
+      }
+    });
+
+    if (sinResultados) {
+      sinResultados.classList.toggle('hidden', visibles !== 0);
+    }
+    if (contador) {
+      contador.textContent = `${visibles} registros`;
+    }
+  }
+
+  if (buscador) {
+    buscador.addEventListener('input', aplicarFiltros);
+  }
+
+  botones.forEach((boton) => {
+    boton.addEventListener('click', () => {
+      tipoActivo = boton.dataset.tipo || 'TODOS';
+      botones.forEach((b) => {
+        const activo = b === boton;
+        b.classList.toggle('bg-blue-600', activo);
+        b.classList.toggle('text-white', activo);
+        b.classList.toggle('bg-white', !activo);
+        b.classList.toggle('border', !activo);
+        b.classList.toggle('border-gray-200', !activo);
+        b.classList.toggle('text-gray-600', !activo);
+      });
+      aplicarFiltros();
+    });
+  });
+</script>

@@ -1,0 +1,163 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import catalogData from '../../data/catalog.json';
+
+type CatalogItem = {
+  id: string;
+  file_name: string;
+  extension: string;
+  media_type: 'PHOTO' | 'VIDEO';
+  created_at?: string | null;
+  url_drive?: string | null;
+  correo_donante?: string | null;
+  creditos_autor?: string | null;
+  marca?: string | null;
+  modelo?: string | null;
+  lente?: string | null;
+  fecha_captura?: string | null;
+  gps_lat?: number | null;
+  gps_lng?: number | null;
+  duracion?: number | null;
+  resolucion?: string | null;
+  fps?: number | null;
+  iso?: string | null;
+  apertura?: string | null;
+  velocidad_obturacion?: string | null;
+  tamano_mb?: number | null;
+  preview_url: string;
+};
+
+export function getStaticPaths() {
+  const items = catalogData as unknown as CatalogItem[];
+  return items
+    .filter((item) => item && item.id)
+    .map((item) => ({
+      params: { id: item.id },
+      props: { item },
+    }));
+}
+
+const { item } = Astro.props as { item: CatalogItem };
+
+function mostrar(valor: unknown): string {
+  if (valor === null || valor === undefined) return 'Sin información';
+  const texto = String(valor).trim();
+  return texto === '' ? 'Sin información' : texto;
+}
+
+const esFoto = item.media_type === 'PHOTO';
+const tituloPagina = `${item.file_name} - AustralData.org`;
+const descargaHref = `https://drive.google.com/uc?export=download&id=${item.id}`;
+const videoEmbedHref = `https://drive.google.com/file/d/${item.id}/preview`;
+
+const gpsTexto = (item.gps_lat != null && item.gps_lng != null)
+  ? `${item.gps_lat}, ${item.gps_lng}`
+  : 'Sin información';
+const gpsMapaHref = (item.gps_lat != null && item.gps_lng != null)
+  ? `https://www.google.com/maps?q=${item.gps_lat},${item.gps_lng}`
+  : null;
+
+const datosGenerales = [
+  { etiqueta: 'Fecha de captura', valor: mostrar(item.fecha_captura) },
+  { etiqueta: 'Marca', valor: mostrar(item.marca) },
+  { etiqueta: 'Modelo', valor: mostrar(item.modelo) },
+];
+
+const datosFoto = [
+  { etiqueta: 'Dimensiones', valor: mostrar(item.resolucion) },
+  { etiqueta: 'Lente', valor: mostrar(item.lente) },
+  { etiqueta: 'ISO', valor: mostrar(item.iso) },
+  { etiqueta: 'Punto f', valor: mostrar(item.apertura) },
+  { etiqueta: 'Tiempo de exposicion', valor: mostrar(item.velocidad_obturacion) },
+  { etiqueta: 'Ubicacion (lat, lng)', valor: gpsTexto },
+];
+
+const datosVideo = [
+  { etiqueta: 'Resolucion', valor: mostrar(item.resolucion) },
+  { etiqueta: 'Lente', valor: mostrar(item.lente) },
+  { etiqueta: 'Ubicacion (lat, lng)', valor: gpsTexto },
+];
+
+const datosEspecificos = esFoto ? datosFoto : datosVideo;
+---
+
+<Layout title={tituloPagina} activePage="biblioteca">
+  <div class="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <a href="/biblioteca" class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition mb-6">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      Volver a la biblioteca
+    </a>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-3">
+        <div class="rounded-2xl overflow-hidden bg-gray-900 border border-gray-200/80 shadow-xs">
+          {esFoto ? (
+            <img
+              src={item.preview_url}
+              alt={item.file_name}
+              class="w-full h-auto object-contain"
+            />
+          ) : (
+            <iframe
+              src={videoEmbedHref}
+              class="w-full aspect-video"
+              allow="autoplay"
+              allowfullscreen
+            ></iframe>
+          )}
+        </div>
+
+        <a
+          href={descargaHref}
+          class="mt-4 w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Descargar archivo original
+        </a>
+      </div>
+
+      <div class="lg:col-span-2">
+        <h1 class="text-xl font-bold text-gray-900 break-words">{item.file_name}</h1>
+        <span class="inline-block mt-2 bg-gray-900 text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
+          {item.extension}
+        </span>
+
+        <div class="mt-6">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Creditos</h2>
+          <p class="text-sm text-gray-800">{mostrar(item.creditos_autor)}</p>
+        </div>
+
+        <div class="mt-6">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Datos generales</h2>
+          <dl class="space-y-2">
+            {datosGenerales.map((dato) => (
+              <div class="flex justify-between text-sm border-b border-gray-100 pb-2">
+                <dt class="text-gray-500">{dato.etiqueta}</dt>
+                <dd class="text-gray-900 font-medium text-right">{dato.valor}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div class="mt-6">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">
+            {esFoto ? 'Datos de la fotografia' : 'Datos del video'}
+          </h2>
+          <dl class="space-y-2">
+            {datosEspecificos.map((dato) => (
+              <div class="flex justify-between text-sm border-b border-gray-100 pb-2">
+                <dt class="text-gray-500">{dato.etiqueta}</dt>
+                <dd class="text-gray-900 font-medium text-right">{dato.valor}</dd>
+              </div>
+            ))}
+          </dl>
+          {gpsMapaHref && (
+            <a href={gpsMapaHref} target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-xs text-blue-600 hover:underline">
+              Ver ubicacion en el mapa
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,345 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subir Registros - AustralData.org</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 min-h-screen antialiased flex flex-col justify-between">
+    
+    <!-- Header Global -->
+    <Header activePage="subir" />
+
+    <!-- Contenedor Principal Formulario -->
+    <main class="max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 flex flex-col justify-center">
+      
+      <div class="mb-8 text-center">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Registro de Donantes e Ingesta</h1>
+        <p class="text-sm text-gray-500 mt-2">Solicita una carpeta privada vinculada a tu Google Drive para subir registros científicos.</p>
+      </div>
+
+      <!-- Tarjeta del Formulario -->
+      <div class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+        
+        <form id="donacionForm" class="space-y-5">
+          <!-- Campo Correo -->
+          <div>
+            <label for="email" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+              Correo Electrónico (Debe ser cuenta Gmail) *
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              required 
+              pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+              title="Debes ingresar una cuenta de correo @gmail.com para otorgar permisos en Google Drive."
+              placeholder="ejemplo@gmail.com" 
+              class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition text-sm"
+            />
+            <p class="text-[11px] text-gray-400 mt-1">
+              * Se compartirá la carpeta privada de carga con esta cuenta de Google Drive.
+            </p>
+          </div>
+
+          <!-- Campo Autor / Créditos -->
+          <div>
+            <label for="autor" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+              Autor / Créditos *
+            </label>
+            <input 
+              type="text" 
+              id="autor" 
+              required 
+              minlength="3"
+              placeholder="Ej: Dr. Juan Pérez / Universidad de Magallanes" 
+              class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition text-sm"
+            />
+            <p class="text-[11px] text-gray-400 mt-1">
+              * Nombre institucional o personal con el que figurará la autoría legal de los registros.
+            </p>
+          </div>
+
+          <!-- Checkbox Términos -->
+          <div class="flex items-start bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+            <input 
+              type="checkbox" 
+              id="terminos" 
+              disabled
+              required 
+              class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-40 cursor-pointer"
+            />
+            <div class="ml-3 text-xs leading-relaxed text-gray-700">
+              <label for="terminos">Acepto los </label>
+              <button 
+                type="button" 
+                id="btnAbrirModal" 
+                class="text-blue-600 font-semibold underline hover:text-blue-800 transition text-left cursor-pointer inline"
+              >
+                Términos, Condiciones y Licencia para la Donación de Registros Científicos
+              </button>
+              <span> y autorizo la creación de la carpeta de carga.</span>
+              <span id="mensajeAviso" class="block text-[11px] text-amber-600 font-medium mt-1.5">
+                * Haz clic en el enlace de los términos para abrirlos, leerlos y habilitar la casilla.
+              </span>
+            </div>
+          </div>
+
+          <!-- Nota / Regla Técnica de Archivos al Pie del Formulario -->
+          <div class="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-center">
+            <p class="text-xs text-amber-800 font-medium leading-relaxed">
+              ⚠️ Solo se permiten archivos fotográficos o audiovisuales originales sin editar o modificar.
+            </p>
+          </div>
+
+          <!-- Botón Submit -->
+          <button 
+            type="submit" 
+            id="btnSubmit" 
+            disabled
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex justify-center items-center text-sm"
+          >
+            <span id="btnText">Solicitar Carpeta de Entrega</span>
+          </button>
+        </form>
+
+        <div id="mensajeEstado" class="mt-4 p-3 rounded-xl text-xs text-center hidden font-medium"></div>
+
+      </div>
+    </main>
+
+    <!-- Footer Global -->
+    <Footer />
+
+    <!-- Modal Emergente Términos -->
+    <div id="modalTerminos" class="fixed inset-0 bg-gray-900/60 backdrop-blur-xs flex justify-center items-center p-4 hidden z-50">
+      <div class="bg-white border border-gray-200 max-w-2xl w-full rounded-2xl p-6 shadow-2xl flex flex-col max-h-[85vh]">
+        
+        <div class="border-b border-gray-200 pb-3 mb-4">
+          <h2 class="text-base font-bold text-gray-900">Términos, Condiciones y Licencia para la Donación de Registros Científicos</h2>
+          <p class="text-xs text-gray-500 mt-0.5">Fundación Austral de Observación Científica y Datos Abiertos</p>
+        </div>
+        
+        <div class="overflow-y-auto pr-3 space-y-4 text-xs text-gray-600 leading-relaxed border-b border-gray-200 pb-4 mb-4">
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">1. Objeto</h3>
+            <p>Estos Términos y Condiciones regulan la carga, tratamiento, conservación, difusión, publicación y reutilización de registros científicos, imágenes, datos, metadatos y archivos aportados a la infraestructura digital de la Fundación Austral de Observación Científica y Datos Abiertos, en adelante, la “Fundación”. La aceptación de este instrumento es obligatoria para toda persona que desee cargar contenido en la infraestructura de la Fundación.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">2. Aceptación electrónica y Consentimiento Digital</h3>
+            <p>La aceptación se entenderá prestada de manera expresa cuando el usuario marque la casilla de conformidad ("checkbox") en las interfaces de la plataforma y continúe con la carga de archivos. Dicho acto electrónico, unido al registro técnico automático de autenticación, fecha, hora, cuenta de acceso, sistema operativo y dirección IP, constituirá una manifestación formal de voluntad que equivale a una Firma Electrónica Simple (FES), en conformidad con la Ley N° 19.799 de la República de Chile.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">3. Declaración y Juramento del Usuario</h3>
+            <p>El usuario declara bajo fe de juramento que es el autor exclusivo y titular legítimo de los derechos de propiedad intelectual de los archivos que carga, o bien, que cuenta con las facultades, licencias y autorizaciones legales suficientes para entregarlos a la Fundación bajo los términos de este documento. Asimismo, declara que la carga, uso, procesamiento y posterior publicación de los archivos no infringe derechos de propiedad de terceros, patentes, secretos comerciales, ni compromete información protegida por ley, contrato o deber de confidencialidad externo.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">4. Dedicación al Dominio Público Universal (Creative Commons CC0 1.0)</h3>
+            <p>Por la sola aceptación de estos Términos y Condiciones, el usuario dedica voluntariamente, en la máxima medida permitida por la legislación aplicable, los archivos y sus metadatos asociados al dominio público universal, bajo la herramienta Creative Commons CC0 1.0 Universal (CC0 1.0 Public Domain Dedication). En consecuencia, el usuario renuncia de forma perenne e irrevocable a ejercer frente a la Fundación y frente a terceros cualquier derecho de exclusividad, control de uso, autorización previa, derechos morales, atribución obligatoria o restricción equivalente sobre los archivos y sus metadatos. Cualquier persona o entidad (incluyendo el público general e Inteligencias Artificiales) podrá copiar, reproducir, adaptar, transformar, redistribuir, comunicar públicamente, poner a disposición del público, combinar, traducir, explotar comercialmente y reutilizar libremente el material para cualquier fin, sin necesidad de solicitar permiso, pagar contraprestación ni otorgar crédito, mención o atribución alguna al autor original o a la Fundación. Una vez indexado el registro en la Biblioteca Pública de Datos, esta dedicación es irreversible.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">5. Filosofía de Inmutabilidad de Metadatos Crudos (RAW)</h3>
+            <p>La Fundación promueve la transparencia científica radical, por lo que se compromete a conservar y publicar los archivos y sus metadatos originales sin modificaciones arbitrarias ni censuras. Los metadatos de captura (tales como coordenadas GPS exactas, marcas de tiempo y especificaciones técnicas del sensor) se mantendrán intactos para asegurar el valor de auditoría científica ciudadana. El triage técnico se limitará estrictamente a evaluar la integridad informática del archivo, su legibilidad, coherencia técnica y aptitud del archivo para su conservación o publicación. La responsabilidad legal por el contenido recae de forma exclusiva en el usuario donante.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">6. Ventana de Edición y Bloqueo Automático</h3>
+            <p>El usuario dispondrá de un plazo máximo y fatal de veinticuatro (24) horas continuas, contadas desde la apertura del espacio digital de carga, para añadir, reemplazar, modificar o eliminar los archivos aportados por sí mismo. Vencido dicho plazo, el sistema revocará de forma automática e irrevocable todos los permisos de edición y borrado.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">7. Procedimiento de Corrección de Errores Propios</h3>
+            <p>Si una vez vencida la ventana de edición el usuario detecta un error técnico o humano de buena fe, deberá canalizar una solicitud formal de rectificación al correo oficial hub@australdata.org.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">8. Mecanismo de Purga por Falsedad o Fraude de Autoría</h3>
+            <p>Si la Fundación constata que el usuario declaró falsamente su autoría, el Directorio ejecutará de forma inmediata la "Purga del Registro", eliminando el archivo de forma definitiva de la infraestructura.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">9. Indemnidad Absoluta</h3>
+            <p>El usuario asume toda la responsabilidad legal derivada de los archivos cargados y se obliga a mantener a la Fundación indemne frente a cualquier demanda, daño o perjuicio derivado de la infracción a derechos de propiedad intelectual de terceros.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">10. Exoneración de Responsabilidad por Custodia</h3>
+            <p>Es obligación estricta del usuario mantener copias de respaldo de sus registros. La Fundación no se hace responsable por la pérdida accidental de archivos ni caídas de servidores.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">11. Protección de Datos Personales</h3>
+            <p>El tratamiento de datos se regirá por la Ley N° 19.628 sobre Protección de la Vida Privada en Chile.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">12. Disponibilidad del Servicio</h3>
+            <p>La Fundación se reserva el derecho a suspender temporalmente la interfaz por mantenimiento técnico o actualizaciones de seguridad.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">13. Aceptación Íntegra</h3>
+            <p>La marcación del checkbox y la carga de cualquier archivo implica la aceptación total de estos Términos y Condiciones.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">14. Prelación Normativa</h3>
+            <p>Prevalecerán siempre los instrumentos de mayor jerarquía jurídica conforme a la ley de la República de Chile.</p>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-gray-800 text-xs mb-1">15. Vigencia</h3>
+            <p>Permanecerán plenamente vigentes mientras no sean sustituidos por una versión posterior aprobada por el Directorio.</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button 
+            type="button" 
+            id="btnCerrarModal" 
+            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition text-xs font-medium cursor-pointer"
+          >
+            Cerrar sin aceptar
+          </button>
+          <button 
+            type="button" 
+            id="btnAceptarModal" 
+            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition text-xs shadow-sm cursor-pointer"
+          >
+            He leído y acepto los términos
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script de Control Interactivo -->
+    <script>
+      const form = document.getElementById('donacionForm') as HTMLFormElement;
+      const emailInput = document.getElementById('email') as HTMLInputElement;
+      const autorInput = document.getElementById('autor') as HTMLInputElement;
+      const btnSubmit = document.getElementById('btnSubmit') as HTMLButtonElement;
+      const btnText = document.getElementById('btnText') as HTMLSpanElement;
+      const checkTerminos = document.getElementById('terminos') as HTMLInputElement;
+      const btnAbrirModal = document.getElementById('btnAbrirModal') as HTMLButtonElement;
+      const btnAceptarModal = document.getElementById('btnAceptarModal') as HTMLButtonElement;
+      const btnCerrarModal = document.getElementById('btnCerrarModal') as HTMLButtonElement;
+      const modal = document.getElementById('modalTerminos') as HTMLDivElement;
+      const aviso = document.getElementById('mensajeAviso') as HTMLSpanElement;
+      const estado = document.getElementById('mensajeEstado') as HTMLDivElement;
+
+      let terminosLeidos = false;
+
+      // Abrir Modal
+      btnAbrirModal?.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+      });
+
+      // Cerrar Modal sin aceptar
+      btnCerrarModal?.addEventListener('click', () => {
+        modal.classList.add('hidden');
+      });
+
+      // Aceptar Términos desde el Modal
+      btnAceptarModal?.addEventListener('click', () => {
+        terminosLeidos = true;
+        checkTerminos.disabled = false;
+        checkTerminos.checked = true;
+        btnSubmit.disabled = false;
+        modal.classList.add('hidden');
+        if (aviso) aviso.style.display = 'none';
+      });
+
+      // Control manual del Checkbox una vez desbloqueado
+      checkTerminos?.addEventListener('change', () => {
+        if (terminosLeidos) {
+          btnSubmit.disabled = !checkTerminos.checked;
+        }
+      });
+
+      // Envío del Formulario
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = emailInput?.value.trim().toLowerCase();
+        const autor = autorInput?.value.trim();
+
+        if (!email.endsWith('@gmail.com')) {
+          if (estado) {
+            estado.classList.remove('hidden');
+            estado.className = 'mt-4 p-3 rounded-xl text-xs text-rose-700 bg-rose-50 border border-rose-200';
+            estado.innerText = 'Por favor, ingresa una cuenta de correo válida terminada en @gmail.com';
+          }
+          return;
+        }
+
+        if (!autor || autor.length < 3) {
+          if (estado) {
+            estado.classList.remove('hidden');
+            estado.className = 'mt-4 p-3 rounded-xl text-xs text-rose-700 bg-rose-50 border border-rose-200';
+            estado.innerText = 'Por favor, ingresa el nombre de Autor o Créditos de los datos.';
+          }
+          return;
+        }
+        
+        // Estado de Carga (Bloquear botón)
+        if (btnSubmit) btnSubmit.disabled = true;
+        if (btnText) btnText.innerText = 'Procesando solicitud...';
+        
+        if (estado) {
+          estado.classList.remove('hidden');
+          estado.className = 'mt-4 p-3 rounded-xl text-xs text-blue-700 bg-blue-50 border border-blue-200';
+          estado.innerText = 'Creando tu carpeta privada en Google Drive...';
+        }
+
+        try {
+          const res = await fetch('/api/solicitar-carpeta', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              email: email,
+              autor: autor,
+              terminos: checkTerminos?.checked || false
+            })
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) throw new Error(data.error || 'Ocurrió un inconveniente al comunicarse con el servidor.');
+
+          if (estado) {
+            estado.className = 'mt-4 p-3 rounded-xl text-xs text-emerald-800 bg-emerald-50 border border-emerald-200';
+            estado.innerText = '¡Solicitud recibida con éxito! Te hemos enviado un correo a tu cuenta Gmail con el enlace de acceso a la carpeta de carga.';
+          }
+          form.reset();
+          checkTerminos.disabled = true;
+          terminosLeidos = false;
+
+        } catch (err: any) {
+          if (estado) {
+            estado.className = 'mt-4 p-3 rounded-xl text-xs text-rose-700 bg-rose-50 border border-rose-200';
+            estado.innerText = err.message || 'Error al procesar la solicitud.';
+          }
+        } finally {
+          if (btnSubmit && checkTerminos.checked) btnSubmit.disabled = false;
+          if (btnText) btnText.innerText = 'Solicitar Carpeta de Entrega';
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+Ver CLAUDE.md en la raíz del proyecto — contiene todo el contexto (flujo de datos, esquema de catalog.json, convenciones).
