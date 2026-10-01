@@ -6,8 +6,8 @@ export async function POST({ request }: { request: Request }) {
 
     console.log('Enviando datos a n8n:', body);
 
-    // Petición a la IP de Azure en el puerto 80
-    const response = await fetch('http://20.163.242.252/webhook/25d0ff7d-7537-4832-8892-a822100dbb37', {
+    // Petición a la VM de Azure vía hostname (Cloudflare Workers no permite fetch a IPs directas)
+    const response = await fetch('http://20.163.242.252.sslip.io/webhook/25d0ff7d-7537-4832-8892-a822100dbb37', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
