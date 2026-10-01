@@ -26,3 +26,5 @@ pnpm-debug.log*
 # datos generados automáticamente en cada build
 src/data/catalog.json
 public/previews/
+# Cloudflare local dev
+.wrangler/
