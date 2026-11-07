@@ -22,7 +22,14 @@ const WEBPAY_URL = 'https://www.webpay.cl/form-pay/403905';
 
       <!-- Destino de los aportes -->
       <section class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
+      <!-- Destino de los aportes -->
+      <section class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
         <h2 class="text-lg font-semibold text-gray-900">¿Cómo contribuyen las donaciones?</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-gray-600">
+          <div class="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-1">Operación y resguardo</h3>
+            <p>Mantenimiento de los sistemas que capturan, almacenan y resguardan los registros de fenómenos naturales del hemisferio sur.</p>
+          </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-gray-600">
           <div class="p-4 rounded-xl bg-gray-50 border border-gray-100">
             <h3 class="font-bold text-gray-800 mb-1">Operación y resguardo</h3>
@@ -31,8 +38,12 @@ const WEBPAY_URL = 'https://www.webpay.cl/form-pay/403905';
           <div class="p-4 rounded-xl bg-gray-50 border border-gray-100">
             <h3 class="font-bold text-gray-800 mb-1">Instrumentación técnica y digital</h3>
             <p>Herramientas y plataformas para registrar, procesar y compartir datos abiertos de calidad.</p>
+            <h3 class="font-bold text-gray-800 mb-1">Instrumentación técnica y digital</h3>
+            <p>Herramientas y plataformas para registrar, procesar y compartir datos abiertos de calidad.</p>
           </div>
           <div class="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-1">Difusión y educación</h3>
+            <p>Divulgación científica para la comunidad académica, aficionada y el público en general.</p>
             <h3 class="font-bold text-gray-800 mb-1">Difusión y educación</h3>
             <p>Divulgación científica para la comunidad académica, aficionada y el público en general.</p>
           </div>
@@ -52,7 +63,23 @@ const WEBPAY_URL = 'https://www.webpay.cl/form-pay/403905';
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-3 rounded-xl transition shadow-xs"
+      </section>
+
+      <!-- Opción 1: Tarjeta (Webpay) -->
+      <section class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
+        <h2 class="text-lg font-semibold text-gray-900">Dona con tarjeta</h2>
+        <p class="text-xs text-gray-500">
+          Pago seguro a través de Webpay (Transbank). Tú eliges el monto; puedes pagar con tarjeta de débito o crédito.
+          Los datos de tu tarjeta los gestiona Transbank y no pasan por este sitio.
+        </p>
+        <div class="text-center pt-2">
+          <a
+            href={WEBPAY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-3 rounded-xl transition shadow-xs"
           >
+            Donar con Webpay
             Donar con Webpay
           </a>
         </div>
