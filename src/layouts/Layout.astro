@@ -1,14 +1,20 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
 interface Props {
   title?: string;
+  description?: string;
   activePage?: 'inicio' | 'biblioteca' | 'subir' | 'donaciones' | 'contacto';
 }
 
-const { title = 'AustralData.org', activePage } = Astro.props;
+const {
+  title = 'AustralData.org',
+  description = 'Biblioteca abierta de registros científicos de fenómenos naturales del hemisferio sur. Material original, real y gratuito, de uso libre (CC0).',
+  activePage,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -16,8 +22,21 @@ const { title = 'AustralData.org', activePage } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Íconos de pestaña -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Vista previa al compartir el sitio -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AustralData.org" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://www.australdata.org/logo-completo-1200.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -27,12 +46,20 @@ const { title = 'AustralData.org', activePage } = Astro.props;
     <style>
       body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
+
+    <!-- Navegación sin recargar la página completa -->
+    <ClientRouter />
   </head>
   <body class="bg-gray-50 text-gray-800 min-h-screen antialiased flex flex-col justify-between">
-    <Header activePage={activePage} />
+    <!-- El header se conserva entre páginas (no se vuelve a cargar) -->
+    <div transition:persist="site-header" class="sticky top-0 z-30">
+      <Header activePage={activePage} />
+    </div>
+
     <main class="flex-1 w-full">
       <slot />
     </main>
+
     <Footer />
   </body>
 </html>

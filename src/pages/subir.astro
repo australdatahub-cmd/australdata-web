@@ -1,356 +1,373 @@
 ---
-import '../styles/global.css';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Subir Registros - AustralData.org</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
-  </head>
-  <body class="bg-gray-50 text-gray-800 min-h-screen antialiased flex flex-col justify-between">
-    
-    <!-- Header Global -->
-    <Header activePage="subir" />
+<Layout
+  title="Subir Registros - AustralData.org"
+  description="Aporta fotografías y videos originales de fenómenos naturales del hemisferio sur. Se publican como material real, gratuito y de uso libre (CC0)."
+  activePage="subir"
+>
+  <!-- Contenedor principal del formulario -->
+  <div class="max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-    <!-- Contenedor Principal Formulario -->
-    <main class="max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 flex flex-col justify-center">
-      
-      <div class="mb-8 text-center">
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Registro de Donantes e Ingesta</h1>
-        <p class="text-sm text-gray-500 mt-2">Solicita una carpeta privada vinculada a tu Google Drive para subir registros científicos.</p>
-      </div>
-
-      <!-- Tarjeta del Formulario -->
-      <div class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
-        
-        <form id="donacionForm" class="space-y-5">
-          <!-- Campo Correo -->
-          <div>
-            <label for="email" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-              Correo Electrónico (Debe ser cuenta Gmail) *
-            </label>
-            <input 
-              type="email" 
-              id="email" 
-              required 
-              pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
-              title="Debes ingresar una cuenta de correo @gmail.com para otorgar permisos en Google Drive."
-              placeholder="ejemplo@gmail.com" 
-              class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition text-sm"
-            />
-            <p class="text-[11px] text-gray-400 mt-1">
-              * Se compartirá la carpeta privada de carga con esta cuenta de Google Drive.
-            </p>
-          </div>
-
-          <!-- Campo Autor / Créditos -->
-          <div>
-            <label for="autor" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-              Autor / Créditos *
-            </label>
-            <input 
-              type="text" 
-              id="autor" 
-              required 
-              minlength="3"
-              placeholder="Ej: Dr. Juan Pérez / Universidad de Magallanes" 
-              class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition text-sm"
-            />
-            <p class="text-[11px] text-gray-400 mt-1">
-              * Nombre institucional o personal con el que figurará la autoría legal de los registros.
-            </p>
-          </div>
-
-          <!-- Checkbox Términos -->
-          <div class="flex items-start bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-            <input 
-              type="checkbox" 
-              id="terminos" 
-              disabled
-              required 
-              class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-40 cursor-pointer"
-            />
-            <div class="ml-3 text-xs leading-relaxed text-gray-700">
-              <label for="terminos">Acepto los </label>
-              <button 
-                type="button" 
-                id="btnAbrirModal" 
-                class="text-blue-600 font-semibold underline hover:text-blue-800 transition text-left cursor-pointer inline"
-              >
-                Términos, Condiciones y Licencia para la Donación de Registros Científicos
-              </button>
-              <span> y autorizo la creación de la carpeta de carga.</span>
-              <span id="mensajeAviso" class="block text-[11px] text-amber-600 font-medium mt-1.5">
-                * Haz clic en el enlace de los términos para abrirlos, leerlos y habilitar la casilla.
-              </span>
-            </div>
-          </div>
-
-          <!-- Nota / Regla Técnica de Archivos al Pie del Formulario -->
-          <div class="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-center">
-            <p class="text-xs text-amber-800 font-medium leading-relaxed">
-              ⚠️ Solo se permiten archivos fotográficos o audiovisuales originales sin editar o modificar.
-            </p>
-          </div>
-
-          <!-- Botón Submit -->
-          <button 
-            type="submit" 
-            id="btnSubmit" 
-            disabled
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex justify-center items-center text-sm"
-          >
-            <span id="btnText">Solicitar Carpeta de Entrega</span>
-          </button>
-        </form>
-
-        <div id="mensajeEstado" class="mt-4 p-3 rounded-xl text-xs text-center hidden font-medium"></div>
-
-      </div>
-    </main>
-
-    <!-- Footer Global -->
-    <Footer />
-
-    <!-- Modal Emergente Términos -->
-    <div id="modalTerminos" class="fixed inset-0 bg-gray-900/60 backdrop-blur-xs flex justify-center items-center p-4 hidden z-50">
-      <div class="bg-white border border-gray-200 max-w-2xl w-full rounded-2xl p-6 shadow-2xl flex flex-col max-h-[85vh]">
-        
-        <div class="border-b border-gray-200 pb-3 mb-4">
-          <h2 class="text-base font-bold text-gray-900">Términos, Condiciones y Licencia para la Donación de Registros Científicos</h2>
-          <p class="text-xs text-gray-500 mt-0.5">Fundación Austral de Observación Científica y Datos Abiertos</p>
-        </div>
-        
-        <div class="overflow-y-auto pr-3 space-y-4 text-xs text-gray-600 leading-relaxed border-b border-gray-200 pb-4 mb-4">
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">1. Objeto</h3>
-            <p>Estos Términos y Condiciones regulan la carga, tratamiento, conservación, difusión, publicación y reutilización de registros científicos, imágenes, datos, metadatos y archivos aportados a la infraestructura digital de la Fundación Austral de Observación Científica y Datos Abiertos, en adelante, la "Fundación". La aceptación de este instrumento es obligatoria para toda persona que desee cargar contenido en la infraestructura de la Fundación.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">2. Aceptación electrónica y Consentimiento Digital</h3>
-            <p>La aceptación se entenderá prestada de manera expresa cuando el usuario marque la casilla de conformidad ("checkbox") en las interfaces de la plataforma y continúe con la carga de archivos. Dicho acto electrónico, unido al registro técnico automático de autenticación, fecha, hora, cuenta de acceso, sistema operativo y dirección IP, constituirá una manifestación formal de voluntad que equivale a una Firma Electrónica Simple (FES), en conformidad con la Ley N° 19.799 de la República de Chile.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">3. Declaración y Juramento del Usuario</h3>
-            <p>El usuario declara bajo fe de juramento que es el autor exclusivo y titular legítimo de los derechos de propiedad intelectual de los archivos que carga, o bien, que cuenta con las facultades, licencias y autorizaciones legales suficientes para entregarlos a la Fundación bajo los términos de este documento. Asimismo, declara que la carga, uso, procesamiento y posterior publicación de los archivos no infringe derechos de propiedad de terceros, patentes, secretos comerciales, ni compromete información protegida por ley, contrato o deber de confidencialidad externo.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">4. Dedicación al Dominio Público Universal (Creative Commons CC0 1.0)</h3>
-            <p>Por la sola aceptación de estos Términos y Condiciones, el usuario dedica voluntariamente, en la máxima medida permitida por la legislación aplicable, los archivos y sus metadatos asociados al dominio público universal, bajo la herramienta Creative Commons CC0 1.0 Universal (CC0 1.0 Public Domain Dedication). En consecuencia, el usuario renuncia de forma perenne e irrevocable a ejercer frente a la Fundación y frente a terceros cualquier derecho patrimonial de exclusividad, control de uso, autorización previa, atribución obligatoria o restricción equivalente sobre los archivos y sus metadatos. Cualquier persona o entidad (incluyendo el público general e inteligencias artificiales) podrá copiar, reproducir, adaptar, transformar, redistribuir, comunicar públicamente, poner a disposición del público, combinar, traducir, explotar comercialmente y reutilizar libremente el material para cualquier fin, sin necesidad de solicitar permiso, pagar contraprestación ni otorgar crédito, mención o atribución alguna al autor original o a la Fundación.</p>
-            <p class="mt-2">El derecho moral de autor —que comprende la paternidad e integridad de la obra— es, conforme al artículo 16 de la Ley N° 17.336 sobre Propiedad Intelectual, inalienable e irrenunciable bajo el derecho chileno. En consecuencia, en lo que respecta estrictamente al derecho moral, esta cláusula no opera como una renuncia, sino como una licencia amplísima, gratuita, no exclusiva, perpetua, mundial, irrevocable y transferible, por la cual el usuario autoriza expresamente a la Fundación y a cualquier tercero a ejercer todos los usos del material descritos en el párrafo anterior sin requerir su autorización previa en cada caso, obligándose a no ejercer dicho derecho moral de forma que menoscabe los fines de libre circulación del conocimiento científico perseguidos por este instrumento. Esta construcción reproduce, para el derecho chileno, el mecanismo de "licencia de respaldo" previsto en el instrumento internacional CC0 1.0 Universal para jurisdicciones de derecho continental.</p>
-            <p class="mt-2">Una vez indexado el registro en la Biblioteca Pública de Datos, esta dedicación es irreversible. Si alguna limitación legal o constitucional adicional impidiese una renuncia o licencia total en determinada jurisdicción extranjera, la presente cláusula se entenderá operativa como una autorización libre, gratuita, no exclusiva, perpetua, mundial, transferible e irrevocable para los mismos fines de explotación absoluta y libre de restricciones.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">5. Filosofía de Inmutabilidad de Metadatos Crudos (RAW)</h3>
-            <p>La Fundación promueve la transparencia científica radical, por lo que se compromete a conservar y publicar los archivos y sus metadatos originales sin alteraciones arbitrarias ni censuras. Los metadatos de captura (tales como coordenadas GPS exactas, marcas de tiempo y especificaciones técnicas del sensor) se mantendrán intactos para asegurar el valor de auditoría científica ciudadana, y serán publicados junto al archivo conforme a la cláusula 12. El triage técnico se limitará estrictamente a evaluar la integridad informática del archivo, su legibilidad, coherencia técnica y aptitud del archivo para su conservación o publicación, absteniéndose de modificar los datos crudos originales. La responsabilidad legal por el contenido de dichos metadatos recae de forma exclusiva en el usuario donante.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">6. Ventana de Edición y Bloqueo Automático</h3>
-            <p>El usuario dispondrá de un plazo máximo y fatal de veinticuatro (24) horas continuas, contadas desde la apertura del espacio digital de carga, para añadir, reemplazar, modificar o eliminar los archivos aportados por sí mismo. Vencido dicho plazo, el sistema de automatización interna de la Fundación revocará de forma automática e irrevocable todos los permisos de edición y borrado del usuario sobre esos archivos. El registro pasará a un estado inmutable de "Solo Lectura", dándose inicio al proceso institucional de revisión y archivo.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">7. Evaluación Curatorial, Publicación y Rechazo de Archivos</h3>
-            <p>Una vez vencida la ventana de edición señalada en la cláusula anterior, los archivos ingresarán a un proceso de revisión técnica a cargo de personal o colaboradores de la Fundación ("curadores"), quienes evaluarán exclusivamente su integridad informática, legibilidad, formato, correspondencia con el carácter de archivo original señalado en la cláusula 5, y pertinencia temática para la colección, absteniéndose de todo juicio sobre el mérito artístico o científico del contenido.</p>
-            <p class="mt-2">Como resultado de dicha revisión, cada archivo será clasificado como "Aprobado" o "Rechazado". Los archivos Aprobados serán incorporados de forma permanente a la Biblioteca Pública de Datos bajo los términos de la cláusula 4. Los archivos Rechazados —por no cumplir los criterios técnicos señalados, por tratarse de una copia editada o no original, por duplicidad, o por cualquier otra causa técnica fundada— serán eliminados de forma automática, total y definitiva de todos los sistemas y servidores de la Fundación, sin que ello genere derecho a indemnización, compensación ni explicación pormenorizada alguna a favor del usuario, ni posibilidad de recuperación posterior.</p>
-            <p class="mt-2">El plazo para la realización de esta revisión es variable y depende de la disponibilidad del equipo curatorial, sin que la Fundación garantice un tiempo máximo de respuesta.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">8. Procedimiento de Corrección de Errores Propios</h3>
-            <p>Si una vez vencida la ventana de edición de 24 horas el usuario detecta un error técnico o humano de buena fe en un archivo ya Aprobado (tales como archivos corruptos, incompletos o equivocados), no podrá modificarlos de forma directa. Deberá canalizar una solicitud formal de rectificación al canal oficial del Área Científica mediante el correo electrónico hub@australdata.org. El Administrador del Área Científica, previa validación de la identidad del solicitante y la veracidad del error, será el único operador facultado para abrir una ventana excepcional de corrección o sustituir el archivo manualmente, dejando registro de la trazabilidad del cambio en los logs internos del sistema.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">9. Mecanismo de Purga por Falsedad o Fraude de Autoría</h3>
-            <p>Si la Fundación constata, ya sea por auditoría interna o por denuncia fundada y comprobable de un tercero, que el usuario declaró falsamente su autoría o que carecía de las facultades legales para donar el material, el Directorio de la Fundación ejecutará de forma inmediata e inapelable la "Purga del Registro". La Purga implicará la eliminación total, definitiva e irrevocable del archivo fraudulento de todos los servidores, bases de datos e infraestructura de la Fundación, bloqueando por completo su difusión. Esta medida se adoptará como una acción de protección patrimonial institucional ante terceros y no constituirá censura.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">10. Indemnidad Absoluta</h3>
-            <p>El usuario asume toda la responsabilidad legal derivada de los archivos cargados y se obliga a mantener a la Fundación, sus directores, trabajadores, colaboradores y mandatarios completamente indemnes frente a cualquier demanda, juicio, reclamación, daño, costo, multa o perjuicio civil, penal o administrativo derivado de la infracción a derechos de propiedad intelectual de terceros, falsedad en sus declaraciones o uso ilícito de la plataforma.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">11. Exoneración de Responsabilidad por Custodia</h3>
-            <p>La Fundación provee una infraestructura de libre acceso para la difusión y el avance científico, no un servicio privado de almacenamiento de seguridad personalizado. Es obligación estricta del usuario mantener copias de respaldo y seguridad de sus registros en sus propios sistemas independientes. La Fundación no se hace responsable por la pérdida accidental de archivos, caídas de servidores, ni por registros que sean purgados debido a fallas técnicas o incumplimiento de estos términos.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">12. Protección de Datos Personales y Metadatos de Geolocalización</h3>
-            <p>El tratamiento de los datos personales del usuario donante (tales como su correo electrónico y nombre o créditos de autoría) se rige actualmente por la Ley N° 19.628 sobre Protección de la Vida Privada, y regirá, a contar del 1 de diciembre de 2026, por la Ley N° 21.719 que crea la Agencia de Protección de Datos Personales y establece un nuevo estatuto de protección de datos personales en Chile.</p>
-            <p class="mt-2">El usuario declara conocer y aceptar expresamente que, conforme a la filosofía de transparencia científica señalada en la cláusula 5, los metadatos técnicos incrustados en los archivos Aprobados —incluyendo, sin limitación, coordenadas de geolocalización (GPS) exactas, fecha y hora de captura, y marca y modelo del dispositivo utilizado— serán publicados y quedarán disponibles al público en general junto con el archivo, sin restricción ni anonimización alguna. Es responsabilidad exclusiva del usuario evaluar, antes de la carga, si dicha información pudiese revelar su domicilio, rutinas u otros datos sensibles propios o de terceros, y abstenerse de donar el archivo, o procesarlo previamente para remover dichos metadatos, en caso de no desear su divulgación pública, entendiéndose que la Fundación no realizará dicho filtrado por cuenta del usuario.</p>
-            <p class="mt-2">Cuando los archivos donados contengan datos personales o sensibles de terceras personas (por ejemplo, su imagen o voz), el usuario declara bajo su responsabilidad contar con la base jurídica, consentimiento o autorización correspondiente para su tratamiento y difusión masiva.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">13. Disponibilidad del Servicio</h3>
-            <p>La Fundación se reserva el derecho a suspender temporalmente la interfaz de carga, los flujos de validación o la consulta de registros debido a mantenimiento técnico, actualizaciones de seguridad, contingencias de infraestructura o cumplimiento normativo, sin que ello genere derecho a compensación alguna para los usuarios.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">14. Aceptación Íntegra</h3>
-            <p>La marcación del checkbox y la carga de cualquier archivo en la infraestructura digital de la Fundación implica la aceptación total, incondicional e íntegra de estos Términos y Condiciones. Si el usuario no está de acuerdo con este instrumento, deberá abstenerse de utilizar la plataforma.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">15. Prelación Normativa</h3>
-            <p>En caso de contradicción o conflicto entre estos Términos y Condiciones, el Reglamento Interno de la institución, los Estatutos fundacionales o la ley de la República de Chile, prevalecerán siempre los instrumentos de mayor jerarquía jurídica en el orden correspondiente.</p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-gray-800 text-xs mb-1">16. Vigencia</h3>
-            <p>Estos Términos y Condiciones, en su versión 4.0, entran en vigencia desde el momento de su publicación en el entorno web o plataformas de la Fundación, sustituyendo en su totalidad a la versión 3.5 anterior, y permanecerán plenamente vigentes mientras no sean sustituidos por una versión posterior aprobada por el Directorio.</p>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-3 pt-2">
-          <button 
-            type="button" 
-            id="btnCerrarModal" 
-            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition text-xs font-medium cursor-pointer"
-          >
-            Cerrar sin aceptar
-          </button>
-          <button 
-            type="button" 
-            id="btnAceptarModal" 
-            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition text-xs shadow-sm cursor-pointer"
-          >
-            He leído y acepto los términos
-          </button>
-        </div>
-      </div>
+    <div class="mb-8 text-center">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Aporta tus registros originales</h1>
+      <p class="text-sm text-gray-500 mt-2 max-w-xl mx-auto">
+        Solicita una carpeta privada vinculada a tu Google Drive para subir tus fotografías y videos.
+        Una vez revisados, se publican en la biblioteca como material gratuito y de uso libre para todos (CC0).
+      </p>
     </div>
 
-    <!-- Script de Control Interactivo -->
-    <script>
-      const form = document.getElementById('donacionForm') as HTMLFormElement;
-      const emailInput = document.getElementById('email') as HTMLInputElement;
-      const autorInput = document.getElementById('autor') as HTMLInputElement;
-      const btnSubmit = document.getElementById('btnSubmit') as HTMLButtonElement;
-      const btnText = document.getElementById('btnText') as HTMLSpanElement;
-      const checkTerminos = document.getElementById('terminos') as HTMLInputElement;
-      const btnAbrirModal = document.getElementById('btnAbrirModal') as HTMLButtonElement;
-      const btnAceptarModal = document.getElementById('btnAceptarModal') as HTMLButtonElement;
-      const btnCerrarModal = document.getElementById('btnCerrarModal') as HTMLButtonElement;
-      const modal = document.getElementById('modalTerminos') as HTMLDivElement;
-      const aviso = document.getElementById('mensajeAviso') as HTMLSpanElement;
-      const estado = document.getElementById('mensajeEstado') as HTMLDivElement;
+    <!-- Qué recibimos -->
+    <div class="mb-6 bg-white border border-gray-200/80 rounded-2xl p-5 shadow-sm">
+      <h2 class="text-sm font-bold text-gray-900">Qué recibimos</h2>
+      <ul class="mt-3 space-y-2 text-xs text-gray-600 leading-relaxed list-disc pl-4">
+        <li><strong class="text-gray-800">Solo archivos originales, sin editar.</strong> En fotografía, formato RAW. No aceptamos copias retocadas ni modificadas.</li>
+        <li><strong class="text-gray-800">Solo registros reales.</strong> Capturas hechas por personas, sin imágenes generadas con inteligencia artificial.</li>
+        <li><strong class="text-gray-800">De tu autoría</strong> o con derecho legítimo para aportarlos.</li>
+        <li><strong class="text-gray-800">Se publican con sus metadatos</strong> (fecha, hora, coordenadas GPS y equipo), tal como fueron capturados.</li>
+      </ul>
+    </div>
 
-      let terminosLeidos = false;
+    <!-- Tarjeta del formulario -->
+    <div class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
 
-      // Abrir Modal
-      btnAbrirModal?.addEventListener('click', () => {
-        modal.classList.remove('hidden');
-      });
+      <form id="donacionForm" class="space-y-5">
+        <!-- Campo Correo -->
+        <div>
+          <label for="email" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+            Correo Electrónico (Debe ser cuenta Gmail) *
+          </label>
+          <input
+            type="email"
+            id="email"
+            required
+            pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+            title="Debes ingresar una cuenta de correo @gmail.com para otorgar permisos en Google Drive."
+            placeholder="ejemplo@gmail.com"
+            class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition text-sm"
+          />
+          <p class="text-[11px] text-gray-400 mt-1">
+            * Se compartirá la carpeta privada de carga con esta cuenta de Google Drive.
+          </p>
+        </div>
 
-      // Cerrar Modal sin aceptar
-      btnCerrarModal?.addEventListener('click', () => {
-        modal.classList.add('hidden');
-      });
+        <!-- Autoría: anónima por defecto -->
+        <div>
+          <label class="flex items-start gap-2 text-xs text-gray-700 mb-3 cursor-pointer">
+            <input
+              type="checkbox"
+              id="anonimo"
+              checked
+              class="mt-0.5 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+            />
+            <span>
+              <strong class="text-gray-900">Mantener mi nombre en anonimato.</strong>
+              Los registros se publicarán sin nombre de autor.
+            </span>
+          </label>
 
-      // Aceptar Términos desde el Modal
-      btnAceptarModal?.addEventListener('click', () => {
-        terminosLeidos = true;
-        checkTerminos.disabled = false;
-        checkTerminos.checked = true;
-        btnSubmit.disabled = false;
-        modal.classList.add('hidden');
-        if (aviso) aviso.style.display = 'none';
-      });
+          <label for="autor" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+            Nombre o créditos (opcional)
+          </label>
+          <input
+            type="text"
+            id="autor"
+            disabled
+            maxlength="120"
+            placeholder="Desmarca la casilla de arriba para escribir tu nombre o institución"
+            class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition text-sm disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+          />
+          <p class="text-[11px] text-gray-400 mt-1">
+            * Si lo escribes, este nombre o institución figurará como crédito público de los registros. Tu correo no se muestra en el sitio:
+            la Fundación lo conserva para gestionar la carpeta de carga y la revisión.
+          </p>
+        </div>
 
-      // Control manual del Checkbox una vez desbloqueado
-      checkTerminos?.addEventListener('change', () => {
-        if (terminosLeidos) {
-          btnSubmit.disabled = !checkTerminos.checked;
-        }
-      });
+        <!-- Checkbox Términos -->
+        <div class="flex items-start bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+          <input
+            type="checkbox"
+            id="terminos"
+            disabled
+            required
+            class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-40 cursor-pointer"
+          />
+          <div class="ml-3 text-xs leading-relaxed text-gray-700">
+            <label for="terminos">Acepto los </label>
+            <button
+              type="button"
+              id="btnAbrirModal"
+              class="text-blue-600 font-semibold underline hover:text-blue-800 transition text-left cursor-pointer inline"
+            >
+              Términos, Condiciones y Licencia para la Donación de Registros Científicos
+            </button>
+            <span> y autorizo la creación de la carpeta de carga.</span>
+            <span id="mensajeAviso" class="block text-[11px] text-amber-600 font-medium mt-1.5">
+              * Haz clic en el enlace de los términos para abrirlos, leerlos y habilitar la casilla.
+            </span>
+          </div>
+        </div>
 
-      // Envío del Formulario
-      form?.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        <!-- Nota / Regla técnica de archivos al pie del formulario -->
+        <div class="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-center">
+          <p class="text-xs text-amber-800 font-medium leading-relaxed">
+            ⚠️ Solo se permiten archivos fotográficos o audiovisuales originales sin editar o modificar.
+          </p>
+        </div>
 
-        const email = emailInput?.value.trim().toLowerCase();
-        const autor = autorInput?.value.trim();
+        <!-- Botón Submit -->
+        <button
+          type="submit"
+          id="btnSubmit"
+          disabled
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition duration-200 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex justify-center items-center text-sm"
+        >
+          <span id="btnText">Solicitar Carpeta de Entrega</span>
+        </button>
+      </form>
 
-        if (!email.endsWith('@gmail.com')) {
-          if (estado) {
-            estado.classList.remove('hidden');
-            estado.className = 'mt-4 p-3 rounded-xl text-xs text-rose-700 bg-rose-50 border border-rose-200';
-            estado.innerText = 'Por favor, ingresa una cuenta de correo válida terminada en @gmail.com';
-          }
-          return;
-        }
+      <div id="mensajeEstado" class="mt-4 p-3 rounded-xl text-xs text-center hidden font-medium"></div>
 
-        if (!autor || autor.length < 3) {
-          if (estado) {
-            estado.classList.remove('hidden');
-            estado.className = 'mt-4 p-3 rounded-xl text-xs text-rose-700 bg-rose-50 border border-rose-200';
-            estado.innerText = 'Por favor, ingresa el nombre de Autor o Créditos de los datos.';
-          }
-          return;
-        }
-        
-        // Estado de Carga (Bloquear botón)
-        if (btnSubmit) btnSubmit.disabled = true;
-        if (btnText) btnText.innerText = 'Procesando solicitud...';
-        
+    </div>
+  </div>
+
+  <!-- Modal Emergente Términos -->
+  <div id="modalTerminos" class="fixed inset-0 bg-gray-900/60 backdrop-blur-xs flex justify-center items-center p-4 hidden z-50">
+    <div class="bg-white border border-gray-200 max-w-2xl w-full rounded-2xl p-6 shadow-2xl flex flex-col max-h-[85vh]">
+
+      <div class="border-b border-gray-200 pb-3 mb-4">
+        <h2 class="text-base font-bold text-gray-900">Términos, Condiciones y Licencia para la Donación de Registros Científicos</h2>
+        <p class="text-xs text-gray-500 mt-0.5">Fundación Austral de Observación Científica y Datos Abiertos</p>
+      </div>
+
+      <div class="overflow-y-auto pr-3 space-y-4 text-xs text-gray-600 leading-relaxed border-b border-gray-200 pb-4 mb-4">
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">1. Objeto</h3>
+          <p>Estos Términos y Condiciones regulan la carga, tratamiento, conservación, difusión, publicación y reutilización de registros científicos, imágenes, datos, metadatos y archivos aportados a la infraestructura digital de la Fundación Austral de Observación Científica y Datos Abiertos, en adelante, la "Fundación". La aceptación de este instrumento es obligatoria para toda persona que desee cargar contenido en la infraestructura de la Fundación.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">2. Aceptación electrónica y Consentimiento Digital</h3>
+          <p>La aceptación se entenderá prestada de manera expresa cuando el usuario marque la casilla de conformidad ("checkbox") en las interfaces de la plataforma y continúe con la carga de archivos. Dicho acto electrónico, unido al registro técnico automático de autenticación, fecha, hora, cuenta de acceso, sistema operativo y dirección IP, constituirá una manifestación formal de voluntad que equivale a una Firma Electrónica Simple (FES), en conformidad con la Ley N° 19.799 de la República de Chile.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">3. Declaración y Juramento del Usuario</h3>
+          <p>El usuario declara bajo fe de juramento que es el autor exclusivo y titular legítimo de los derechos de propiedad intelectual de los archivos que carga, o bien, que cuenta con las facultades, licencias y autorizaciones legales suficientes para entregarlos a la Fundación bajo los términos de este documento. Asimismo, declara que la carga, uso, procesamiento y posterior publicación de los archivos no infringe derechos de propiedad de terceros, patentes, secretos comerciales, ni compromete información protegida por ley, contrato o deber de confidencialidad externo.</p>
+          <p class="mt-2">Adicionalmente, el usuario declara que los archivos que carga son registros reales, capturados mediante un dispositivo de registro fotográfico o audiovisual, y que no han sido generados, sintetizados ni alterados, total o parcialmente, mediante inteligencia artificial u otras técnicas de generación o manipulación de contenido (incluyendo la adición, eliminación o modificación de elementos de la escena), ni se presentan como capturas de hechos o fenómenos que no ocurrieron. Esta declaración forma parte de la declaración bajo juramento prestada en esta cláusula.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">4. Dedicación al Dominio Público Universal (Creative Commons CC0 1.0)</h3>
+          <p>Por la sola aceptación de estos Términos y Condiciones, el usuario dedica voluntariamente, en la máxima medida permitida por la legislación aplicable, los archivos y sus metadatos asociados al dominio público universal, bajo la herramienta Creative Commons CC0 1.0 Universal (CC0 1.0 Public Domain Dedication). En consecuencia, el usuario renuncia de forma perenne e irrevocable a ejercer frente a la Fundación y frente a terceros cualquier derecho patrimonial de exclusividad, control de uso, autorización previa, atribución obligatoria o restricción equivalente sobre los archivos y sus metadatos. Cualquier persona o entidad (incluyendo el público general e inteligencias artificiales) podrá copiar, reproducir, adaptar, transformar, redistribuir, comunicar públicamente, poner a disposición del público, combinar, traducir, explotar comercialmente y reutilizar libremente el material para cualquier fin, sin necesidad de solicitar permiso, pagar contraprestación ni otorgar crédito, mención o atribución alguna al autor original o a la Fundación.</p>
+          <p class="mt-2">El derecho moral de autor —que comprende la paternidad e integridad de la obra— es, conforme al artículo 16 de la Ley N° 17.336 sobre Propiedad Intelectual, inalienable e irrenunciable bajo el derecho chileno. En consecuencia, en lo que respecta estrictamente al derecho moral, esta cláusula no opera como una renuncia, sino como una licencia amplísima, gratuita, no exclusiva, perpetua, mundial, irrevocable y transferible, por la cual el usuario autoriza expresamente a la Fundación y a cualquier tercero a ejercer todos los usos del material descritos en el párrafo anterior sin requerir su autorización previa en cada caso, obligándose a no ejercer dicho derecho moral de forma que menoscabe los fines de libre circulación del conocimiento científico perseguidos por este instrumento. Esta construcción reproduce, para el derecho chileno, el mecanismo de "licencia de respaldo" previsto en el instrumento internacional CC0 1.0 Universal para jurisdicciones de derecho continental.</p>
+          <p class="mt-2">Una vez indexado el registro en la Biblioteca Pública de Datos, esta dedicación es irreversible. Si alguna limitación legal o constitucional adicional impidiese una renuncia o licencia total en determinada jurisdicción extranjera, la presente cláusula se entenderá operativa como una autorización libre, gratuita, no exclusiva, perpetua, mundial, transferible e irrevocable para los mismos fines de explotación absoluta y libre de restricciones.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">5. Filosofía de Inmutabilidad de Metadatos Crudos (RAW)</h3>
+          <p>La Fundación promueve la transparencia científica radical, por lo que se compromete a conservar y publicar los archivos y sus metadatos originales sin alteraciones arbitrarias ni censuras. Los metadatos de captura (tales como coordenadas GPS exactas, marcas de tiempo y especificaciones técnicas del sensor) se mantendrán intactos para asegurar el valor de auditoría científica ciudadana, y serán publicados junto al archivo conforme a la cláusula 12. El triage técnico se limitará estrictamente a evaluar la integridad informática del archivo, su legibilidad, coherencia técnica y aptitud del archivo para su conservación o publicación, absteniéndose de modificar los datos crudos originales. La responsabilidad legal por el contenido de dichos metadatos recae de forma exclusiva en el usuario donante.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">6. Ventana de Edición y Bloqueo Automático</h3>
+          <p>El usuario dispondrá de un plazo máximo y fatal de veinticuatro (24) horas continuas, contadas desde la apertura del espacio digital de carga, para añadir, reemplazar, modificar o eliminar los archivos aportados por sí mismo. Vencido dicho plazo, el sistema de automatización interna de la Fundación revocará de forma automática e irrevocable todos los permisos de edición y borrado del usuario sobre esos archivos. El registro pasará a un estado inmutable de "Solo Lectura", dándose inicio al proceso institucional de revisión y archivo.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">7. Evaluación Curatorial, Publicación y Rechazo de Archivos</h3>
+          <p>Una vez vencida la ventana de edición señalada en la cláusula anterior, los archivos ingresarán a un proceso de revisión técnica a cargo de personal o colaboradores de la Fundación ("curadores"), quienes evaluarán exclusivamente su integridad informática, legibilidad, formato, correspondencia con el carácter de archivo original señalado en la cláusula 5, ausencia de indicios razonables de que el registro haya sido generado o alterado mediante inteligencia artificial en contravención de la cláusula 3, y pertinencia temática para la colección, absteniéndose de todo juicio sobre el mérito artístico o científico del contenido.</p>
+          <p class="mt-2">Como resultado de dicha revisión, cada archivo será clasificado como "Aprobado" o "Rechazado". Los archivos Aprobados serán incorporados de forma permanente a la Biblioteca Pública de Datos bajo los términos de la cláusula 4. Los archivos Rechazados —por no cumplir los criterios técnicos señalados, por tratarse de una copia editada o no original, por haber sido generado o alterado mediante inteligencia artificial, por duplicidad, o por cualquier otra causa técnica fundada— serán eliminados de forma automática, total y definitiva de todos los sistemas y servidores de la Fundación, sin que ello genere derecho a indemnización, compensación ni explicación pormenorizada alguna a favor del usuario, ni posibilidad de recuperación posterior.</p>
+          <p class="mt-2">El plazo para la realización de esta revisión es variable y depende de la disponibilidad del equipo curatorial, sin que la Fundación garantice un tiempo máximo de respuesta. Esta revisión no constituye una garantía de verificación absoluta del origen de cada archivo, cuya veracidad sigue siendo responsabilidad del usuario conforme a la cláusula 3.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">8. Procedimiento de Corrección de Errores Propios</h3>
+          <p>Si una vez vencida la ventana de edición de 24 horas el usuario detecta un error técnico o humano de buena fe en un archivo ya Aprobado (tales como archivos corruptos, incompletos o equivocados), no podrá modificarlos de forma directa. Deberá canalizar una solicitud formal de rectificación al canal oficial del Área Científica mediante el correo electrónico hub@australdata.org. El Administrador del Área Científica, previa validación de la identidad del solicitante y la veracidad del error, será el único operador facultado para abrir una ventana excepcional de corrección o sustituir el archivo manualmente, dejando registro de la trazabilidad del cambio en los logs internos del sistema.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">9. Mecanismo de Purga por Falsedad o Fraude de Autoría</h3>
+          <p>Si la Fundación constata, ya sea por auditoría interna o por denuncia fundada y comprobable de un tercero, que el usuario declaró falsamente su autoría, que carecía de las facultades legales para donar el material o que los archivos no son registros reales conforme a la declaración de la cláusula 3, el Directorio de la Fundación ejecutará de forma inmediata e inapelable la "Purga del Registro". La Purga implicará la eliminación total, definitiva e irrevocable del archivo fraudulento de todos los servidores, bases de datos e infraestructura de la Fundación, bloqueando por completo su difusión. Esta medida se adoptará como una acción de protección patrimonial institucional ante terceros y no constituirá censura.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">10. Indemnidad Absoluta</h3>
+          <p>El usuario asume toda la responsabilidad legal derivada de los archivos cargados y se obliga a mantener a la Fundación, sus directores, trabajadores, colaboradores y mandatarios completamente indemnes frente a cualquier demanda, juicio, reclamación, daño, costo, multa o perjuicio civil, penal o administrativo derivado de la infracción a derechos de propiedad intelectual de terceros, falsedad en sus declaraciones o uso ilícito de la plataforma.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">11. Exoneración de Responsabilidad por Custodia</h3>
+          <p>La Fundación provee una infraestructura de libre acceso para la difusión y el avance científico, no un servicio privado de almacenamiento de seguridad personalizado. Es obligación estricta del usuario mantener copias de respaldo y seguridad de sus registros en sus propios sistemas independientes. La Fundación no se hace responsable por la pérdida accidental de archivos, caídas de servidores, ni por registros que sean purgados debido a fallas técnicas o incumplimiento de estos términos.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">12. Protección de Datos Personales y Metadatos de Geolocalización</h3>
+          <p>El tratamiento de los datos personales del usuario donante (tales como su correo electrónico y nombre o créditos de autoría) se rige actualmente por la Ley N° 19.628 sobre Protección de la Vida Privada, y regirá, a contar del 1 de diciembre de 2026, por la Ley N° 21.719 que crea la Agencia de Protección de Datos Personales y establece un nuevo estatuto de protección de datos personales en Chile.</p>
+          <p class="mt-2">El usuario declara conocer y aceptar expresamente que, conforme a la filosofía de transparencia científica señalada en la cláusula 5, los metadatos técnicos incrustados en los archivos Aprobados —incluyendo, sin limitación, coordenadas de geolocalización (GPS) exactas, fecha y hora de captura, y marca y modelo del dispositivo utilizado— serán publicados y quedarán disponibles al público en general junto con el archivo, sin restricción ni anonimización alguna. Es responsabilidad exclusiva del usuario evaluar, antes de la carga, si dicha información pudiese revelar su domicilio, rutinas u otros datos sensibles propios o de terceros, y abstenerse de donar el archivo, o procesarlo previamente para remover dichos metadatos, en caso de no desear su divulgación pública, entendiéndose que la Fundación no realizará dicho filtrado por cuenta del usuario.</p>
+          <p class="mt-2">Cuando los archivos donados contengan datos personales o sensibles de terceras personas (por ejemplo, su imagen o voz), el usuario declara bajo su responsabilidad contar con la base jurídica, consentimiento o autorización correspondiente para su tratamiento y difusión masiva.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">13. Disponibilidad del Servicio</h3>
+          <p>La Fundación se reserva el derecho a suspender temporalmente la interfaz de carga, los flujos de validación o la consulta de registros debido a mantenimiento técnico, actualizaciones de seguridad, contingencias de infraestructura o cumplimiento normativo, sin que ello genere derecho a compensación alguna para los usuarios.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">14. Aceptación Íntegra</h3>
+          <p>La marcación del checkbox y la carga de cualquier archivo en la infraestructura digital de la Fundación implica la aceptación total, incondicional e íntegra de estos Términos y Condiciones. Si el usuario no está de acuerdo con este instrumento, deberá abstenerse de utilizar la plataforma.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-gray-800 text-xs mb-1">15. Prelación Normativa</h3>
+          <p>En caso de contradicción o conflicto entre estos Términos y Condiciones, el Reglamento Interno de la institución, los Estatutos fundacionales o la ley de la República de Chile, prevalecerán siempre los instrumentos de mayor jerarquía jurídica en el orden correspondiente.</p>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-2">
+        <button
+          type="button"
+          id="btnCerrarModal"
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition text-xs font-medium cursor-pointer"
+        >
+          Cerrar sin aceptar
+        </button>
+        <button
+          type="button"
+          id="btnAceptarModal"
+          class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition text-xs shadow-sm cursor-pointer"
+        >
+          He leído y acepto los términos
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<!-- Script de control interactivo -->
+<script>
+  // Se ejecuta cada vez que se entra a la página (también al navegar sin recargar).
+  function iniciarSubir() {
+    const form = document.getElementById('donacionForm') as HTMLFormElement | null;
+    if (!form) return; // no estamos en la página de subir
+
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const autorInput = document.getElementById('autor') as HTMLInputElement;
+    const anonimoCheck = document.getElementById('anonimo') as HTMLInputElement;
+    const btnSubmit = document.getElementById('btnSubmit') as HTMLButtonElement;
+    const btnText = document.getElementById('btnText') as HTMLSpanElement;
+    const checkTerminos = document.getElementById('terminos') as HTMLInputElement;
+    const btnAbrirModal = document.getElementById('btnAbrirModal') as HTMLButtonElement;
+    const btnAceptarModal = document.getElementById('btnAceptarModal') as HTMLButtonElement;
+    const btnCerrarModal = document.getElementById('btnCerrarModal') as HTMLButtonElement;
+    const modal = document.getElementById('modalTerminos') as HTMLDivElement;
+    const aviso = document.getElementById('mensajeAviso') as HTMLSpanElement;
+    const estado = document.getElementById('mensajeEstado') as HTMLDivElement;
+
+    let terminosLeidos = false;
+
+    // Anonimato: el campo de nombre solo se habilita si se desmarca la casilla
+    function sincronizarAnonimo() {
+      autorInput.disabled = anonimoCheck.checked;
+      if (anonimoCheck.checked) autorInput.value = '';
+    }
+    anonimoCheck?.addEventListener('change', () => {
+      sincronizarAnonimo();
+      if (!anonimoCheck.checked) autorInput.focus();
+    });
+    sincronizarAnonimo();
+
+    // Abrir modal
+    btnAbrirModal?.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+    });
+
+    // Cerrar modal sin aceptar
+    btnCerrarModal?.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+
+    // Aceptar términos desde el modal
+    btnAceptarModal?.addEventListener('click', () => {
+      terminosLeidos = true;
+      checkTerminos.disabled = false;
+      checkTerminos.checked = true;
+      btnSubmit.disabled = false;
+      modal.classList.add('hidden');
+      if (aviso) aviso.style.display = 'none';
+    });
+
+    // Control manual del checkbox una vez desbloqueado
+    checkTerminos?.addEventListener('change', () => {
+      if (terminosLeidos) {
+        btnSubmit.disabled = !checkTerminos.checked;
+      }
+    });
+
+    // Envío del formulario
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = emailInput?.value.trim().toLowerCase();
+      // Si es anónimo (o dejó el nombre vacío), se envía "Anónimo" como crédito.
+      const nombreEscrito = anonimoCheck.checked ? '' : autorInput.value.trim();
+      const autor = nombreEscrito || 'Anónimo';
+
+      if (!email.endsWith('@gmail.com')) {
         if (estado) {
           estado.classList.remove('hidden');
-          estado.className = 'mt-4 p-3 rounded-xl text-xs text-blue-700 bg-blue-50 border border-blue-200';
-          estado.innerText = 'Creando tu carpeta privada en Google Drive...';
+          estado.className = 'mt-4 p-3 rounded-xl text-xs text-rose-700 bg-rose-50 border border-rose-200';
+          estado.innerText = 'Por favor, ingresa una cuenta de correo válida terminada en @gmail.com';
         }
+        return;
+      }
 
-        try {
-          const res = await fetch('/api/solicitar-carpeta', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              email: email,
-              autor: autor,
-              terminos: checkTerminos?.checked || false
-            })
-          });
+      // Estado de carga (bloquear botón)
+      if (btnSubmit) btnSubmit.disabled = true;
+      if (btnText) btnText.innerText = 'Procesando solicitud...';
 
-          const data = await res.json();
+      if (estado) {
+        estado.classList.remove('hidden');
+        estado.className = 'mt-4 p-3 rounded-xl text-xs text-blue-700 bg-blue-50 border border-blue-200';
+        estado.innerText = 'Creando tu carpeta privada en Google Drive...';
+      }
 
-          if (!res.ok) throw new Error(data.error || 'Ocurrió un inconveniente al comunicarse con el servidor.');
+      try {
+        const res = await fetch('/api/solicitar-carpeta', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            autor: autor,
+            terminos: checkTerminos?.checked || false
+          })
+        });
 
-          if (estado) {
-            estado.className = 'mt-4 p-3 rounded-xl text-xs text-emerald-800 bg-emerald-50 border border-emerald-200';
-            estado.innerText = '¡Solicitud recibida con éxito! Te hemos enviado un correo a tu cuenta Gmail con el enlace de acceso a la carpeta de carga.';
-          }
-          form.reset();
-          checkTerminos.disabled = true;
-          terminosLeidos = false;
+        const data = await res.json();
 
-        } catch (err: any) {
-          if (estado) {
-            estado.className = 'mt-4 p-3 rounded-xl text-xs text-rose-700 bg-rose-50 border border-rose-200';
-            estado.innerText = err.message || 'Error al procesar la solicitud.';
-          }
-        } finally {
-          if (btnSubmit && checkTerminos.checked) btnSubmit.disabled = false;
-          if (btnText) btnText.innerText = 'Solicitar Carpeta de Entrega';
+        if (!res.ok) throw new Error(data.error || 'Ocurrió un inconveniente al comunicarse con el servidor.');
+
+        if (estado) {
+          estado.className = 'mt-4 p-3 rounded-xl text-xs text-emerald-800 bg-emerald-50 border border-emerald-200';
+          estado.innerText = '¡Solicitud recibida con éxito! Te hemos enviado un correo a tu cuenta Gmail con el enlace de acceso a la carpeta de carga.';
         }
-      });
-    </script>
-  </body>
-</html>
+        form.reset();
+        sincronizarAnonimo();
+        checkTerminos.disabled = true;
+        terminosLeidos = false;
+
+      } catch (err: any) {
+        if (estado) {
+          estado.className = 'mt-4 p-3 rounded-xl text-xs text-rose-700 bg-rose-50 border border-rose-200';
+          estado.innerText = err.message || 'Error al procesar la solicitud.';
+        }
+      } finally {
+        if (btnSubmit && checkTerminos.checked) btnSubmit.disabled = false;
+        if (btnText) btnText.innerText = 'Solicitar Carpeta de Entrega';
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', iniciarSubir);
+</script>

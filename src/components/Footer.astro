@@ -1,10 +1,16 @@
 ---
+const year = new Date().getFullYear();
 ---
 
 <footer class="bg-white border-t border-gray-200 py-8 text-center text-xs text-gray-500 mt-auto">
   <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <div>
-      &copy; 2026 Fundación Austral de Observación Científica y Datos Abiertos.
+    <div class="space-y-1">
+      <div>
+        &copy; {year} Fundación Austral de Observación Científica y Datos Abiertos.
+      </div>
+      <div class="text-gray-400">
+        Registros reales y originales, gratuitos y de uso libre (CC0 1.0).
+      </div>
     </div>
     <div class="flex items-center gap-4 font-medium text-gray-600">
       <a href="/biblioteca" class="hover:underline">Biblioteca</a>

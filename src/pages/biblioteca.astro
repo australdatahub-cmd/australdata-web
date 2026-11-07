@@ -42,18 +42,30 @@ const items = validItems
 const totalLabel = `${items.length} registros`;
 ---
 
-<Layout title="Biblioteca - AustralData.org" activePage="biblioteca">
+<Layout
+  title="Biblioteca - AustralData.org"
+  description="Descarga gratis fotografías y videos originales de fenómenos naturales del hemisferio sur. Material real, sin IA, de uso libre (CC0)."
+  activePage="biblioteca"
+>
   <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Catálogo de Registros Científicos</h1>
-      <p class="text-xs text-gray-500 mt-1">Explora imágenes y videos georreferenciados recolectados en terreno.</p>
+      <h1 class="text-2xl font-bold text-gray-900">Biblioteca abierta de registros científicos</h1>
+      <p class="text-sm text-gray-600 mt-2 max-w-3xl leading-relaxed">
+        Fotografías y videos originales de fenómenos naturales del hemisferio sur. Descárgalos en su máxima calidad,
+        gratis y sin pedir permiso: están dedicados al dominio público (CC0 1.0).
+      </p>
+      <div class="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold">
+        <span class="px-2.5 py-1 rounded-md bg-blue-50 border border-blue-100 text-blue-700">Gratis y de uso libre</span>
+        <span class="px-2.5 py-1 rounded-md bg-blue-50 border border-blue-100 text-blue-700">Originales sin editar</span>
+        <span class="px-2.5 py-1 rounded-md bg-blue-50 border border-blue-100 text-blue-700">Reales, sin IA</span>
+      </div>
     </div>
 
     <div class="mb-6 flex flex-col sm:flex-row gap-3 sm:items-center">
       <input
         type="text"
         id="buscador"
-        placeholder="Buscar por nombre, camara o autor..."
+        placeholder="Buscar por nombre, cámara o autor..."
         class="w-full sm:max-w-sm px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
       />
       <div class="flex gap-2" id="filtroTipo">
@@ -98,60 +110,65 @@ const totalLabel = `${items.length} registros`;
     </div>
 
     <p id="sinResultados" class="hidden text-center text-sm text-gray-400 py-16">
-      No se encontraron registros con esa busqueda.
+      No se encontraron registros con esa búsqueda.
     </p>
   </div>
 </Layout>
 
 <script>
-  const buscador = document.getElementById('buscador') as HTMLInputElement | null;
-  const tarjetas = Array.from(document.querySelectorAll('.tarjeta')) as HTMLElement[];
-  const sinResultados = document.getElementById('sinResultados') as HTMLElement | null;
-  const contador = document.getElementById('contador') as HTMLElement | null;
-  const botones = Array.from(document.querySelectorAll('.filtro-btn')) as HTMLButtonElement[];
+  // Se ejecuta cada vez que se entra a la página (también al navegar sin recargar).
+  function iniciarBiblioteca() {
+    const buscador = document.getElementById('buscador') as HTMLInputElement | null;
+    if (!buscador) return; // no estamos en la biblioteca
 
-  let tipoActivo = 'TODOS';
+    const tarjetas = Array.from(document.querySelectorAll('.tarjeta')) as HTMLElement[];
+    const sinResultados = document.getElementById('sinResultados') as HTMLElement | null;
+    const contador = document.getElementById('contador') as HTMLElement | null;
+    const botones = Array.from(document.querySelectorAll('.filtro-btn')) as HTMLButtonElement[];
 
-  function aplicarFiltros() {
-    const texto = buscador ? buscador.value.trim().toLowerCase() : '';
-    let visibles = 0;
+    let tipoActivo = 'TODOS';
 
-    tarjetas.forEach((tarjeta) => {
-      const busqueda = tarjeta.dataset.busqueda || '';
-      const coincideTexto = texto === '' || busqueda.includes(texto);
-      const coincideTipo = tipoActivo === 'TODOS' || tarjeta.dataset.tipo === tipoActivo;
-      const visible = coincideTexto && coincideTipo;
-      tarjeta.classList.toggle('hidden', !visible);
-      if (visible) {
-        visibles = visibles + 1;
-      }
-    });
+    function aplicarFiltros() {
+      const texto = buscador ? buscador.value.trim().toLowerCase() : '';
+      let visibles = 0;
 
-    if (sinResultados) {
-      sinResultados.classList.toggle('hidden', visibles !== 0);
-    }
-    if (contador) {
-      contador.textContent = `${visibles} registros`;
-    }
-  }
-
-  if (buscador) {
-    buscador.addEventListener('input', aplicarFiltros);
-  }
-
-  botones.forEach((boton) => {
-    boton.addEventListener('click', () => {
-      tipoActivo = boton.dataset.tipo || 'TODOS';
-      botones.forEach((b) => {
-        const activo = b === boton;
-        b.classList.toggle('bg-blue-600', activo);
-        b.classList.toggle('text-white', activo);
-        b.classList.toggle('bg-white', !activo);
-        b.classList.toggle('border', !activo);
-        b.classList.toggle('border-gray-200', !activo);
-        b.classList.toggle('text-gray-600', !activo);
+      tarjetas.forEach((tarjeta) => {
+        const busqueda = tarjeta.dataset.busqueda || '';
+        const coincideTexto = texto === '' || busqueda.includes(texto);
+        const coincideTipo = tipoActivo === 'TODOS' || tarjeta.dataset.tipo === tipoActivo;
+        const visible = coincideTexto && coincideTipo;
+        tarjeta.classList.toggle('hidden', !visible);
+        if (visible) {
+          visibles = visibles + 1;
+        }
       });
-      aplicarFiltros();
+
+      if (sinResultados) {
+        sinResultados.classList.toggle('hidden', visibles !== 0);
+      }
+      if (contador) {
+        contador.textContent = `${visibles} registros`;
+      }
+    }
+
+    buscador.addEventListener('input', aplicarFiltros);
+
+    botones.forEach((boton) => {
+      boton.addEventListener('click', () => {
+        tipoActivo = boton.dataset.tipo || 'TODOS';
+        botones.forEach((b) => {
+          const activo = b === boton;
+          b.classList.toggle('bg-blue-600', activo);
+          b.classList.toggle('text-white', activo);
+          b.classList.toggle('bg-white', !activo);
+          b.classList.toggle('border', !activo);
+          b.classList.toggle('border-gray-200', !activo);
+          b.classList.toggle('text-gray-600', !activo);
+        });
+        aplicarFiltros();
+      });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', iniciarBiblioteca);
 </script>

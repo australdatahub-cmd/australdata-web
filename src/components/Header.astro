@@ -4,64 +4,94 @@ interface Props {
 }
 
 const { activePage } = Astro.props;
+
+const links = [
+  { href: '/', key: 'inicio', label: 'Inicio' },
+  { href: '/biblioteca', key: 'biblioteca', label: 'Biblioteca' },
+  { href: '/subir', key: 'subir', label: 'Subir' },
+  { href: '/donaciones', key: 'donaciones', label: 'Donaciones' },
+  { href: '/contacto', key: 'contacto', label: 'Contacto' },
+];
+
+const base = 'nav-link px-3 py-2 rounded-lg transition';
+const on = 'bg-blue-50 text-blue-700 font-semibold';
+const off = 'hover:bg-gray-100 hover:text-gray-900';
 ---
 
-<header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+<header class="bg-white border-b border-gray-200">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-    
-    <!-- Logo e Identidad AustralData.org -->
+
+    <!-- Logo e identidad -->
     <a href="/" class="flex items-center gap-3 group">
-      <img 
-        src="/Logo.svg" 
-        alt="Logo Fundación Austral" 
-        class="w-10 h-10 object-contain rounded-full border border-gray-100 shadow-xs group-hover:scale-105 transition-transform"
+      <img
+        src="/Logo-negro.svg"
+        alt="Logo Fundación Austral de Observación Científica y Datos Abiertos"
+        width="40"
+        height="40"
+        class="w-10 h-10 object-contain group-hover:scale-105 transition-transform"
       />
-      <div class="flex items-center">
-        <span class="text-base font-bold text-gray-900 tracking-tight">AustralData.org</span>
-      </div>
+      <span class="text-base font-bold text-gray-900 tracking-tight">AustralData.org</span>
     </a>
 
-    <!-- Enlaces Principales -->
-    <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-gray-600">
-      <a 
-        href="/" 
-        class={`px-3 py-2 rounded-lg transition ${activePage === 'inicio' ? 'bg-blue-50 text-blue-700 font-semibold' : 'hover:bg-gray-100 hover:text-gray-900'}`}
-      >
-        Inicio
-      </a>
-      <a 
-        href="/biblioteca" 
-        class={`px-3 py-2 rounded-lg transition ${activePage === 'biblioteca' ? 'bg-blue-50 text-blue-700 font-semibold' : 'hover:bg-gray-100 hover:text-gray-900'}`}
-      >
-        Biblioteca
-      </a>
-      <a 
-        href="/subir" 
-        class={`px-3 py-2 rounded-lg transition ${activePage === 'subir' ? 'bg-blue-50 text-blue-700 font-semibold' : 'hover:bg-gray-100 hover:text-gray-900'}`}
-      >
-        Subir
-      </a>
-      <a 
-        href="/donaciones" 
-        class={`px-3 py-2 rounded-lg transition ${activePage === 'donaciones' ? 'bg-blue-50 text-blue-700 font-semibold' : 'hover:bg-gray-100 hover:text-gray-900'}`}
-      >
-        Donaciones
-      </a>
-      <a 
-        href="/contacto" 
-        class={`px-3 py-2 rounded-lg transition ${activePage === 'contacto' ? 'bg-blue-50 text-blue-700 font-semibold' : 'hover:bg-gray-100 hover:text-gray-900'}`}
-      >
-        Contacto
-      </a>
+    <!-- Enlaces principales (escritorio) -->
+    <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-gray-600" aria-label="Principal">
+      {links.map((l) => (
+        <a
+          href={l.href}
+          data-nav={l.href}
+          class={`${base} ${activePage === l.key ? on : off}`}
+          aria-current={activePage === l.key ? 'page' : undefined}
+        >
+          {l.label}
+        </a>
+      ))}
     </nav>
 
-    <!-- Botón de Acción -->
-    <a 
-      href="/subir" 
+    <!-- Botón de acción -->
+    <a
+      href="/subir"
       class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-sm transition"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
       Subir Registro
     </a>
   </div>
+
+  <!-- Enlaces principales (celular) -->
+  <nav class="md:hidden border-t border-gray-100 overflow-x-auto" aria-label="Principal móvil">
+    <div class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 whitespace-nowrap">
+      {links.map((l) => (
+        <a
+          href={l.href}
+          data-nav={l.href}
+          class={`${base} ${activePage === l.key ? on : off}`}
+          aria-current={activePage === l.key ? 'page' : undefined}
+        >
+          {l.label}
+        </a>
+      ))}
+    </div>
+  </nav>
 </header>
+
+<script>
+  // Como el header no se recarga al navegar, marcamos la página activa con este script.
+  const ACTIVO = ['bg-blue-50', 'text-blue-700', 'font-semibold'];
+  const INACTIVO = ['hover:bg-gray-100', 'hover:text-gray-900'];
+
+  function marcarActivo() {
+    let ruta = location.pathname.replace(/\/$/, '') || '/';
+    if (ruta.startsWith('/archivo')) ruta = '/biblioteca';
+
+    document.querySelectorAll<HTMLAnchorElement>('a[data-nav]').forEach((a) => {
+      const destino = a.dataset.nav || '/';
+      const activo = destino === '/' ? ruta === '/' : ruta === destino || ruta.startsWith(destino + '/');
+      a.classList.remove(...ACTIVO, ...INACTIVO);
+      a.classList.add(...(activo ? ACTIVO : INACTIVO));
+      if (activo) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+  }
+
+  document.addEventListener('astro:page-load', marcarActivo);
+</script>
