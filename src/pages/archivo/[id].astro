@@ -47,7 +47,8 @@ function mostrar(valor: unknown): string {
 
 const esFoto = item.media_type === 'PHOTO';
 const tituloPagina = `${item.file_name} - AustralData.org`;
-const descargaHref = `https://drive.google.com/uc?export=download&id=${item.id}`;
+// La descarga pasa por el sitio para poder contarla; el sitio redirige a Drive.
+const descargaHref = `/api/descargar/${item.id}`;
 const videoEmbedHref = `https://drive.google.com/file/d/${item.id}/preview`;
 
 const gpsTexto = (item.gps_lat != null && item.gps_lng != null)
@@ -82,7 +83,7 @@ const datosEspecificos = esFoto ? datosFoto : datosVideo;
 ---
 
 <Layout title={tituloPagina} activePage="biblioteca">
-  <div class="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" id="registro" data-registro-id={item.id}>
     <a href="/biblioteca" class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition mb-6">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
       Volver a la biblioteca
@@ -109,6 +110,7 @@ const datosEspecificos = esFoto ? datosFoto : datosVideo;
 
         <a
           href={descargaHref}
+          data-astro-reload
           class="mt-4 w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -171,3 +173,19 @@ const datosEspecificos = esFoto ? datosFoto : datosVideo;
     </div>
   </div>
 </Layout>
+
+<script>
+  // Aviso silencioso de visita (se ejecuta al entrar a la página, también al navegar sin recargar).
+  function registrarVista() {
+    const id = document.getElementById('registro')?.dataset.registroId;
+    if (!id) return;
+    fetch('/api/vista', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+      keepalive: true,
+    }).catch(() => {});
+  }
+
+  document.addEventListener('astro:page-load', registrarVista);
+</script>
