@@ -8,6 +8,13 @@
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "australdata-stats",
+			"database_id": "621e3467-609b-4ee4-99e1-350a44626880"
+		}
+	],
 	"observability": {
 		"enabled": true
 	}
