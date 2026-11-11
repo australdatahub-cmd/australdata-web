@@ -10,7 +10,13 @@ export async function GET({ params, request }: { params: { id?: string }; reques
     return new Response('Registro no encontrado', { status: 404 });
   }
 
-  await registrar(request, id, 'descarga');
+  // Las precargas del navegador no son descargas reales: no se cuentan.
+  const proposito = `${request.headers.get('sec-purpose') ?? ''} ${request.headers.get('purpose') ?? ''}`.toLowerCase();
+  const esPrecarga = proposito.includes('prefetch') || proposito.includes('prerender');
+
+  if (!esPrecarga) {
+    await registrar(request, id, 'descarga');
+  }
 
   return Response.redirect(`https://drive.google.com/uc?export=download&id=${id}`, 302);
 }
