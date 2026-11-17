@@ -3,11 +3,15 @@ import Layout from '../layouts/Layout.astro';
 
 // Enlace de pago Webpay.cl (Transbank) de la Fundación
 const WEBPAY_URL = 'https://www.webpay.cl/form-pay/403905';
+
+// Enlace de donación de PayPal (se obtiene en paypal.com/donate/buttons).
+// Si algún día se deja vacío (''), la sección de PayPal deja de mostrarse.
+const PAYPAL_URL = 'https://www.paypal.com/donate/?hosted_button_id=U2HZQJUCCUVRU';
 ---
 
 <Layout
   title="Donaciones - AustralData.org"
-  description="Aporta a la ciencia abierta del hemisferio sur: donaciones a la Fundación Austral de Observación Científica y Datos Abiertos con tarjeta o transferencia."
+  description="Aporta a la ciencia abierta del hemisferio sur: donaciones a la Fundación Austral de Observación Científica y Datos Abiertos con tarjeta, PayPal o transferencia."
   activePage="donaciones"
 >
   <div class="max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-6">
@@ -58,7 +62,28 @@ const WEBPAY_URL = 'https://www.webpay.cl/form-pay/403905';
         </div>
       </section>
 
-      <!-- Opción 2: Transferencia -->
+      <!-- Opción 2: PayPal (desde el extranjero) -->
+      {PAYPAL_URL && (
+        <section class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
+          <h2 class="text-lg font-semibold text-gray-900">Dona con PayPal</h2>
+          <p class="text-xs text-gray-500">
+            Ideal si vives fuera de Chile. Puedes pagar con tu cuenta PayPal o con tarjeta, y elegir el monto en la
+            moneda que prefieras. El pago lo gestiona PayPal y tus datos de tarjeta no pasan por este sitio.
+          </p>
+          <div class="text-center pt-2">
+            <a
+              href={PAYPAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 bg-[#0070ba] hover:bg-[#005ea6] text-white text-sm font-semibold px-6 py-3 rounded-xl transition shadow-xs"
+            >
+              Donar con PayPal
+            </a>
+          </div>
+        </section>
+      )}
+
+      <!-- Opción 3: Transferencia -->
       <section class="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
         <h2 class="text-lg font-semibold text-gray-900">Dona por transferencia bancaria</h2>
 

@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Terminos from '../components/Terminos.astro';
+
+// Fecha que se muestra como "última actualización" de los términos.
+// Cámbiala a mano cuando modifiques el texto de Terminos.astro.
+const ACTUALIZADO = 'noviembre de 2026';
+
+// El archivo debe existir en la carpeta public/documentos/ del proyecto.
+const ESTATUTOS_PDF = '/documentos/estatutos.pdf';
+---
+
+<Layout
+  title="Documentos y transparencia - AustralData.org"
+  description="Términos y condiciones, estatutos de la Fundación y cómo solicitar información. Transparencia sobre cómo funciona AustralData.org."
+>
+  <div class="max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="mb-8">
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Documentos y transparencia</h1>
+      <p class="mt-3 text-gray-600 leading-relaxed">
+        Aquí están los documentos que rigen a la Fundación y a esta plataforma. Creemos que quien dona, descarga o
+        colabora tiene derecho a saber cómo funcionamos.
+      </p>
+      <nav class="mt-5 flex flex-wrap gap-2 text-sm" aria-label="Contenido de la página">
+        <a href="#terminos" class="px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:border-gray-400 transition">Términos y condiciones</a>
+        <a href="#datos-personales" class="px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:border-gray-400 transition">Datos personales</a>
+        <a href="#estatutos" class="px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:border-gray-400 transition">Estatutos</a>
+        <a href="#transparencia" class="px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:border-gray-400 transition">Solicitar información</a>
+      </nav>
+    </header>
+
+    <!-- Estatutos -->
+    <section id="estatutos" class="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-xs mb-6 scroll-mt-24">
+      <h2 class="text-lg font-bold text-gray-900">Estatutos de la Fundación</h2>
+      <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+        Documento fundacional de la Fundación Austral de Observación Científica y Datos Abiertos: sus fines,
+        su organización y las reglas de su Directorio.
+      </p>
+      <a
+        href={ESTATUTOS_PDF}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-700 text-white text-sm font-semibold rounded-xl transition"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        Ver estatutos (PDF)
+      </a>
+    </section>
+
+    <!-- Solicitudes de transparencia -->
+    <section id="transparencia" class="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-xs mb-6 scroll-mt-24">
+      <h2 class="text-lg font-bold text-gray-900">Solicitar información a la Fundación</h2>
+      <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+        Cualquier persona puede pedirnos información sobre la Fundación: su Directorio, sus documentos, el uso de las
+        donaciones o cómo se tratan los datos. Escríbenos a
+        <a href="mailto:contacto@australdata.org?subject=Solicitud%20de%20transparencia" class="text-blue-600 hover:underline font-medium">contacto@australdata.org</a>
+        indicando qué necesitas y, si quieres, tus datos de contacto para responderte.
+      </p>
+    </section>
+
+    <!-- Datos personales (apunta a la cláusula 12) -->
+    <section id="datos-personales" class="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-xs mb-6 scroll-mt-24">
+      <h2 class="text-lg font-bold text-gray-900">Protección de datos personales</h2>
+      <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+        Cómo usamos tu correo electrónico, por cuánto tiempo lo conservamos y cómo ejercer tus derechos (acceso,
+        rectificación, supresión, oposición y portabilidad) está explicado en la
+        <a href="#clausula-12" class="text-blue-600 hover:underline font-medium">cláusula 12</a>
+        de los términos. Para ejercer tus derechos, escribe a
+        <a href="mailto:contacto@australdata.org?subject=Datos%20personales" class="text-blue-600 hover:underline font-medium">contacto@australdata.org</a>.
+      </p>
+      <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+        Al visitar el sitio no usamos cookies de seguimiento. Contamos cuántas veces se abre y se descarga cada
+        registro, junto con el país de origen de la visita. Este contador no guarda direcciones IP ni datos que
+        identifiquen a la persona.
+      </p>
+    </section>
+
+    <!-- Términos y condiciones -->
+    <section id="terminos" class="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-xs scroll-mt-24">
+      <h2 class="text-lg font-bold text-gray-900">Términos, Condiciones y Licencia para la Donación de Registros Científicos</h2>
+      <p class="text-xs text-gray-500 mt-1">
+        Fundación Austral de Observación Científica y Datos Abiertos · Última actualización: {ACTUALIZADO}
+      </p>
+      <p class="mt-3 text-sm text-gray-600 leading-relaxed">
+        Estos términos se aceptan al subir un registro. Para quien solo descarga: todo el material de la biblioteca
+        está dedicado al dominio público bajo
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.es" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">CC0 1.0</a>
+        y puede usarse libremente, incluso con fines comerciales, sin pedir permiso ni dar crédito.
+      </p>
+
+      <div class="mt-5 pt-5 border-t border-gray-200 space-y-5 text-sm text-gray-600 leading-relaxed">
+        <Terminos />
+      </div>
+    </section>
+  </div>
+</Layout>

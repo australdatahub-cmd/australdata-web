@@ -15,6 +15,37 @@ const {
   description = 'Biblioteca abierta de registros científicos de fenómenos naturales del hemisferio sur. Material original, real y gratuito, de uso libre (CC0).',
   activePage,
 } = Astro.props;
+
+// Dirección canónica de la página actual (evita contenido duplicado en buscadores).
+const SITIO = 'https://www.australdata.org';
+const canonica = new URL(Astro.url.pathname, SITIO).href;
+const esInicio = Astro.url.pathname === '/';
+
+// Datos estructurados para buscadores (solo en el inicio).
+const datosOrganizacion = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'NGO',
+      '@id': `${SITIO}/#organizacion`,
+      name: 'Fundación Austral de Observación Científica y Datos Abiertos',
+      alternateName: 'Austral Data',
+      url: SITIO,
+      logo: `${SITIO}/logo-completo-1200.png`,
+      email: 'contacto@australdata.org',
+      description,
+      sameAs: ['https://www.instagram.com/australdata'],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITIO}/#sitio`,
+      url: SITIO,
+      name: 'AustralData.org',
+      inLanguage: 'es',
+      publisher: { '@id': `${SITIO}/#organizacion` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -36,6 +67,20 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content="https://www.australdata.org/logo-completo-1200.png" />
+    <meta property="og:url" content={canonica} />
+    <meta property="og:locale" content="es_CL" />
+
+    <!-- Vista previa en X / Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://www.australdata.org/logo-completo-1200.png" />
+
+    <!-- Dirección canónica y mapa del sitio -->
+    <link rel="canonical" href={canonica} />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    {esInicio && <script type="application/ld+json" set:html={JSON.stringify(datosOrganizacion)} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
